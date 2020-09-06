@@ -1,0 +1,9 @@
+# Various binary files
+*.tga
+
+# Various editors
+*~
+
+# VIM
+.sw?
+.*.sw?
