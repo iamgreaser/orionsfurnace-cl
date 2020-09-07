@@ -11,6 +11,7 @@
                #:cffi
                #:sdl2
                #:sdl2-image
+               #:sdl2-ttf
                #:trivial-gray-streams)
   :pathname "src"
   :components ((:file "package")

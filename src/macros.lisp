@@ -13,6 +13,14 @@
        ,@body)
      (sdl2-image:quit)))
 
+(defmacro with-ttf-lib (() &body body)
+  "Temporarily loads the SDL2_TTF library."
+  `(unwind-protect
+     (progn
+       (sdl2-ttf:init)
+       ,@body)
+     (sdl2-ttf:quit)))
+
 (defmacro with-render-target ((renderer texture) &body body)
   "Uses a texture as a render target for the duration of the block."
   (with-gensyms (g-renderer g-texture)
