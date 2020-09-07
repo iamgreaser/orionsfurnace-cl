@@ -25,5 +25,19 @@
 (defparameter *backbuf* nil)
 (defparameter *current-render-target* nil)
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; FIXME: TEMPORARY REPRESENTATION --GM
+(defparameter *board-w* 64)
+(defparameter *board-h* 64)
 
+;; FIXME: TEMPORARY REPRESENTATION --GM
+(defparameter *player-walk-key-xn* nil)
+(defparameter *player-walk-key-yn* nil)
+(defparameter *player-walk-key-xp* nil)
+(defparameter *player-walk-key-yp* nil)
+(defparameter *player-tile-x* 3)
+(defparameter *player-tile-y* 2)
+(defparameter *player-dir* :south)
+(defparameter *player-move-cooldown* 0)
+(defparameter *player-move-cooldown-time* 8)
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

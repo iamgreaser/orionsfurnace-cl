@@ -25,8 +25,8 @@
     (sdl2:render-fill-rect *renderer* clip)
     (sdl2:set-render-draw-color *renderer* 255 255 255 255)
 
-    (let* ((cam-cell-x 2)
-           (cam-cell-y 1)
+    (let* ((cam-cell-x *player-tile-x*)
+           (cam-cell-y *player-tile-y*)
            (cam-pixel-x (+ (* cam-cell-x *cell-w*) (floor *cell-w* 2)))
            (cam-pixel-y (+ (* cam-cell-y *cell-h*) (floor *cell-h* 2)))
            (cam-offs-x (- cam-pixel-x (floor *cam-w* 2)))
@@ -43,8 +43,8 @@
             (draw-tile px py cx cy))))
 
       ;; Draw entities
-      (let* ((cx 2)
-             (cy 1)
+      (let* ((cx *player-tile-x*)
+             (cy *player-tile-y*)
              (px (- (* *cell-w* cx) cam-offs-x))
              (py (- (* *cell-h* cy) cam-offs-y)))
         (draw-entity px py cx cy))
@@ -52,18 +52,22 @@
 
 (defun draw-entity (px py cx cy)
   ;; TODO: Accept a tile as an argument --GM
-  (let* ((texture *gfx-player-base*))
+  (let* ((texture *gfx-player-base*)
+         (dir-idx (ecase *player-dir*
+                    (:north 0)
+                    (:south 1)
+                    (:west  2)
+                    (:east  3))))
     (sdl2:with-rects ((d-rect px py *cell-w* *cell-h*)
-                      (s-rect (* *cell-w* 1) 0 *cell-w* *cell-h*))
+                      (s-rect (* *cell-w* dir-idx) 0 *cell-w* *cell-h*))
       (sdl2:render-copy *renderer* texture
                         :source-rect s-rect
                         :dest-rect d-rect))))
 
 (defun draw-tile (px py cx cy)
   ;; TODO: Accept a tile as an argument --GM
-  ;; TODO: Not hardcode the board dimensions --GM
-  (when (and (<= 0 cx (1- 64))
-             (<= 0 cy (1- 64)))
+  (when (and (<= 0 cx (1- *board-w*))
+             (<= 0 cy (1- *board-h*)))
     (let* ((texture *gfx-tiles-floor001*))
       (sdl2:with-rects ((d-rect px py *cell-w* *cell-h*)
                         (s-rect 0 0 *cell-w* *cell-h*))
@@ -77,7 +81,9 @@
     (sdl2:render-fill-rect *renderer* clip)
     (draw-text (+ *sidebar-x* 10)
                (+ *sidebar-y* 10)
-               "Fonts."
+               (format nil "Pos (~d, ~d)"
+                       *player-tile-x*
+                       *player-tile-y*)
                170 170 255)
     ))
 
@@ -89,18 +95,20 @@
 ;; If it's crap, feel free to get rid of it.
 ;; But if it helps, feel free to keep it. --GM
 (defvar *font-texture-cache* nil)
-(defparameter *font-texture-cache-max* 200)
-(defparameter *font-texture-cache-reduce-to* 50)
+(defparameter *font-texture-cache-max* 50)
+(defparameter *font-texture-cache-reduce-to* 10)
 (defun draw-text (px py text &optional (r 255) (g 255) (b 255) (a 255))
   (let* ((key (list text r g b a))
          (assoc-result (assoc key *font-texture-cache* :test #'equal))
          (texture (cdr assoc-result)))
     (unless texture
+      ;;(format t "Cache len ~d~%" (length *font-texture-cache*))
       (setf texture (make-new-text-texture text r g b a))
       (push (cons key texture) *font-texture-cache*)
       (when (>= (length *font-texture-cache*) *font-texture-cache-max*)
+        ;;(format t "Reducing~%")
         (setf *font-texture-cache*
-              (subseq 'list *font-texture-cache*
+              (subseq *font-texture-cache*
                       0 *font-texture-cache-reduce-to*))))
     (sdl2:with-rects ((d-rect px py
                               (sdl2:texture-width texture)

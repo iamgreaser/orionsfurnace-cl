@@ -32,8 +32,14 @@
 
 (defun handle-key (keysym pressed)
   (keysym-case keysym
+    ;; Movement keys
+    (:a (setf *player-walk-key-xn* pressed))
+    (:d (setf *player-walk-key-xp* pressed))
+    (:w (setf *player-walk-key-yn* pressed))
+    (:s (setf *player-walk-key-yp* pressed))
+
     ;; G: Collect garbage
-    (:g (let () #+sbcl (sb-ext:gc :full t)))
+    (:g (when pressed (let () #+sbcl (sb-ext:gc :full t))))
 
     ;; Escape: Quit
     (:escape
