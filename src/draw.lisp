@@ -25,8 +25,8 @@
     (sdl2:render-fill-rect *renderer* clip)
     (sdl2:set-render-draw-color *renderer* 255 255 255 255)
 
-    (let* ((cam-cell-x *player-tile-x*)
-           (cam-cell-y *player-tile-y*)
+    (let* ((cam-cell-x (entity-cx *player-entity*))
+           (cam-cell-y (entity-cy *player-entity*))
            (cam-pixel-x (+ (* cam-cell-x *cell-w*) (floor *cell-w* 2)))
            (cam-pixel-y (+ (* cam-cell-y *cell-h*) (floor *cell-h* 2)))
            (cam-offs-x (- cam-pixel-x (floor *cam-w* 2)))
@@ -43,8 +43,8 @@
             (draw-tile px py cx cy))))
 
       ;; Draw entities
-      (let* ((cx *player-tile-x*)
-             (cy *player-tile-y*)
+      (let* ((cx (entity-cx *player-entity*))
+             (cy (entity-cy *player-entity*))
              (px (- (* *cell-w* cx) cam-offs-x))
              (py (- (* *cell-h* cy) cam-offs-y)))
         (draw-entity px py cx cy))
@@ -53,7 +53,7 @@
 (defun draw-entity (px py cx cy)
   ;; TODO: Accept a tile as an argument --GM
   (let* ((texture *gfx-player-base*)
-         (dir-idx (ecase *player-dir*
+         (dir-idx (ecase (entity-dir *player-entity*)
                     (:north 0)
                     (:south 1)
                     (:west  2)
@@ -82,8 +82,8 @@
     (draw-text (+ *sidebar-x* 10)
                (+ *sidebar-y* 10)
                (format nil "Pos (~d, ~d)"
-                       *player-tile-x*
-                       *player-tile-y*)
+                       (entity-cx *player-entity*)
+                       (entity-cy *player-entity*))
                170 170 255)
     ))
 

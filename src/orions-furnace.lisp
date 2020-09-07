@@ -34,10 +34,9 @@
 (defparameter *player-walk-key-yn* nil)
 (defparameter *player-walk-key-xp* nil)
 (defparameter *player-walk-key-yp* nil)
-(defparameter *player-tile-x* 3)
-(defparameter *player-tile-y* 2)
-(defparameter *player-dir* :south)
-(defparameter *player-move-cooldown* 0)
-(defparameter *player-move-cooldown-time* 8)
+(defparameter *player-entity*
+  (make-instance 'entity
+                 :x 3
+                 :y 2))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
