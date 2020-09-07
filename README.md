@@ -7,7 +7,7 @@ To get this working, make sure you have QuickLisp installed in your Common Lisp 
 
 This should be sufficient to get it running nicely:
 
-    ln -s "$(pwd)/src/orions-furnace" "~/quicklisp/local-projects/orions-furnace"
+    ln -s "$(pwd)" "~/quicklisp/local-projects/orions-furnace"
 
 Although I'm probably doing it all wrong, so expect these instructions to change. --GM
 

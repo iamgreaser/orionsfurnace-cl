@@ -6,7 +6,13 @@
   :license "AGPLv3+"
   :version "0.0.1"
   :serial t
-  :depends-on (#:alexandria #:bordeaux-threads #:sdl2 #:sdl2-image)
+  :depends-on (#:alexandria
+               #:bordeaux-threads
+               #:cffi
+               #:sdl2
+               #:sdl2-image
+               #:trivial-gray-streams)
+  :pathname "src"
   :components ((:file "package")
                (:file "assets")
                (:file "macros")
