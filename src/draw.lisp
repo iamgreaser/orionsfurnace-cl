@@ -51,16 +51,9 @@
 
 (defun draw-tile (cx cy)
   ;; TODO: Accept a tile as an argument --GM
-  (when (and (<= 0 cx (1- *board-w*))
-             (<= 0 cy (1- *board-h*)))
-    (let* ((texture *gfx-tiles-floor001*)
-           (px (- (* *cell-w* cx) *cam-offs-x*))
-           (py (- (* *cell-h* cy) *cam-offs-y*)))
-      (sdl2:with-rects ((d-rect px py *cell-w* *cell-h*)
-                        (s-rect 0 0 *cell-w* *cell-h*))
-        (sdl2:render-copy *renderer* texture
-                          :source-rect s-rect
-                          :dest-rect d-rect)))))
+  (let* ((px (- (* *cell-w* cx) *cam-offs-x*))
+         (py (- (* *cell-h* cy) *cam-offs-y*)))
+    (draw-tile-at *board* cx cy px py)))
 
 (defun draw-sidebar ()
   (sdl2:with-rects ((clip *sidebar-x* *sidebar-y* *sidebar-w* *sidebar-h*))

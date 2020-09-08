@@ -37,15 +37,3 @@
     ;; Tick it!
     (tick *player-entity*)
     ))
-
-(defun can-enter-cell (cx cy)
-  (block result
-    (unless (<= 0 cx (1- *board-w*))
-      (return-from result nil))
-    (unless (<= 0 cy (1- *board-h*))
-      (return-from result nil))
-
-    ;; TODO: Check against some sort of grid
-
-    ;; OK, we're good!
-    t))

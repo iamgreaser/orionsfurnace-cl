@@ -78,11 +78,16 @@
 
 (define-serial-class board ()
   ((id :type (unsigned-byte 32)
+       :accessor board-id
        :initarg :id
-       :initform (error "Must provide :ID"))
-   (grid :type (simple-array (or null entity) (* *))
-         :initarg :grid
-         :initform (error "Must provide :GRID"))
+       :initform (prog1 *entity-id-counter* (incf *entity-id-counter*)))
+   ;; TODO: Have some sort of tile type enum here --GM
+   (tile-grid :type (simple-array keyword (* *))
+              :initarg :tile-grid
+              :initform (error "Must provide :ENTITIES-GRID"))
+   (entities-grid :type (simple-array list (* *))
+                  :initarg :entities-grid
+                  :initform (error "Must provide :ENTITIES-GRID"))
    )
   (:documentation "A board with a lot of things in it."))
 

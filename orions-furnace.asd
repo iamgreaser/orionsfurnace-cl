@@ -20,6 +20,7 @@
                (:file "classes")
                (:file "orions-furnace")
 
+               (:file "board")
                (:file "entity")
 
                (:file "draw")

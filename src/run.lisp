@@ -23,7 +23,9 @@
   (sdl2:make-this-thread-main #'main))
 
 (defmacro with-game-state (() &body body)
-  `(let* ((*player-entity* (make-instance 'player-entity
+  `(let* ((*board* (generate-board))
+          (*player-entity* (make-instance 'player-entity
+                                          :board *board*
                                           :x 3 :y 2)))
      ,@body))
 

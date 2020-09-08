@@ -102,7 +102,7 @@
 (defmethod attempt-move-entity-by ((entity entity) dx dy &key (cooldown 0))
   (let* ((new-x (+ (entity-cx entity) dx))
          (new-y (+ (entity-cy entity) dy)))
-    (if (can-enter-cell new-x new-y)
+    (if (can-enter-cell (entity-board entity) entity new-x new-y)
       (force-move-entity-by entity dx dy
                             :cooldown cooldown))))
 
