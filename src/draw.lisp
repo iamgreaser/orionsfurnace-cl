@@ -31,29 +31,29 @@
            (*cam-offs-y* (- cam-pixel-y (floor *cam-h* 2)))
            )
 
-      ;; Draw tiles
+      ;; Draw tiles with entities
       (do ((cy 0 (1+ cy)))
           ((>= (- (* *cell-h* cy) *cam-offs-y*) *cam-h*))
         (do ((cx 0 (1+ cx)))
             ((>= (- (* *cell-w* cx) *cam-offs-x*) *cam-w*))
-          (draw-tile cx cy)))
+          (draw-tile-lower cx cy)))
 
-      ;; Draw entities
-      (draw-entity *player-entity*)
+      (do ((cy 0 (1+ cy)))
+          ((>= (- (* *cell-h* cy) *cam-offs-y*) *cam-h*))
+        (do ((cx 0 (1+ cx)))
+            ((>= (- (* *cell-w* cx) *cam-offs-x*) *cam-w*))
+          (draw-tile-upper cx cy)))
       )))
 
-(defun draw-entity (entity)
-  (let* ((cx (entity-cx entity))
-         (cy (entity-cy entity))
-         (px (- (entity-vis-px entity) *cam-offs-x*))
-         (py (- (entity-vis-py entity) *cam-offs-y*)))
-    (draw-entity-at entity px py)))
-
-(defun draw-tile (cx cy)
-  ;; TODO: Accept a tile as an argument --GM
+(defun draw-tile-lower (cx cy)
   (let* ((px (- (* *cell-w* cx) *cam-offs-x*))
          (py (- (* *cell-h* cy) *cam-offs-y*)))
-    (draw-tile-at *board* cx cy px py)))
+    (draw-tile-at-lower *board* cx cy px py)))
+
+(defun draw-tile-upper (cx cy)
+  (let* ((px (- (* *cell-w* cx) *cam-offs-x*))
+         (py (- (* *cell-h* cy) *cam-offs-y*)))
+    (draw-tile-at-upper *board* cx cy px py)))
 
 (defun draw-sidebar ()
   (sdl2:with-rects ((clip *sidebar-x* *sidebar-y* *sidebar-w* *sidebar-h*))

@@ -64,12 +64,20 @@
   (:documentation "Texture for this entity."))
 
 (defmethod tick ((entity entity))
-  (with-slots (cx cy dir
+  (with-slots (board
+               cx cy dir
                walk-dx walk-dy
                lerp-pdx lerp-pdy
                lerp-num lerp-den
                cooldown-ticks)
               *player-entity*
+
+    ;; If we aren't on the correct cell on the board, put us there.
+    (when board
+      (when (cell-on-board board cx cy)
+        (unless (member entity (board-entities-at board cx cy)
+                        :test #'eq)
+          (push entity (board-entities-at board cx cy)))))
 
     ;; Update lerp
     (when (> lerp-num 0)
@@ -116,8 +124,7 @@
            (old-vis-px (entity-vis-px entity))
            (old-vis-py (entity-vis-py entity)))
       (setf cooldown-ticks cooldown)
-      (setf cx new-x)
-      (setf cy new-y)
+      (force-move-entity-to entity new-x new-y :cooldown cooldown)
       (setf lerp-pdx (- old-vis-px (* cx *cell-w*)))
       (setf lerp-pdy (- old-vis-py (* cy *cell-h*)))
       (setf lerp-den (floor (* cooldown-ticks 3/2)))
@@ -126,22 +133,37 @@
 
 (defmethod force-move-entity-to ((entity entity) new-x new-y &key (cooldown 0))
   (with-slots (cx cy
+               board
                lerp-pdx lerp-pdy lerp-num lerp-den
                cooldown-ticks)
               entity
+    ;; Remove ourself from the cell
+    (setf (board-entities-at board cx cy)
+          (delete entity (board-entities-at board cx cy)
+                  :test #'eq))
     (setf cooldown-ticks cooldown)
     (setf lerp-pdx 0)
     (setf lerp-pdy 0)
     (setf lerp-num 0)
     (setf lerp-den 1)
     (setf cx new-x)
-    (setf cy new-y)))
+    (setf cy new-y)
+    (pushnew entity (board-entities-at board cx cy)
+             :test #'eq)
+    ))
 
 (defmethod entity-graphic ((entity entity))
   (values (entity-texture entity) 0 0))
 
 ;; TODO: Make a decent default texture and use it --GM
 (defmethod entity-texture ((entity entity)) *gfx-tiles-wall001*)
+
+(defun draw-entity (entity)
+  (let* ((cx (entity-cx entity))
+         (cy (entity-cy entity))
+         (px (- (entity-vis-px entity) *cam-offs-x*))
+         (py (- (entity-vis-py entity) *cam-offs-y*)))
+    (draw-entity-at entity px py)))
 
 (defmethod draw-entity-at ((entity entity) px py)
   (multiple-value-bind (texture subx suby) (entity-graphic entity)
