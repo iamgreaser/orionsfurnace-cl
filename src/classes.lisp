@@ -12,6 +12,12 @@
        ,@extra-params)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; Widespread generics
+
+(defgeneric tick (thing)
+  (:documentation "Ticks... well, anything really."))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (defvar *entity-id-counter* 0)
 (define-serial-class entity ()
@@ -42,6 +48,28 @@
    (walk-cooldown :type (signed-byte 16)
                   :accessor entity-walk-cooldown
                   :initform 8)
+
+   ;; Input handling
+   (walk-dx :type (signed-byte 8)
+            :accessor entity-walk-dx
+            :initform 0)
+   (walk-dy :type (signed-byte 8)
+            :accessor entity-walk-dy
+            :initform 0)
+
+   ;; For lerping
+   (lerp-pdx :type (signed-byte 32)
+             :accessor entity-lerp-pdx
+             :initform 0)
+   (lerp-pdy :type (signed-byte 32)
+             :accessor entity-lerp-pdy
+             :initform 0)
+   (lerp-num :type (unsigned-byte 16)
+             :accessor entity-lerp-num
+             :initform 0)
+   (lerp-den :type (unsigned-byte 16)
+             :accessor entity-lerp-den
+             :initform 0)
    )
   (:documentation "An entity with a position which can be bound to a board. Subclass me!"))
 

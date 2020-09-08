@@ -16,9 +16,66 @@
 ;;; Entity default methods
 
 (defmethod entity-vis-px ((entity entity))
-  (* *cell-w* (entity-cx entity)))
+  (+ (* *cell-w* (entity-cx entity))
+     (if (>= (entity-lerp-den entity) 1)
+       (round (* (entity-lerp-num entity) (entity-lerp-pdx entity))
+              (entity-lerp-den entity))
+       0)))
 (defmethod entity-vis-py ((entity entity))
-  (* *cell-h* (entity-cy entity)))
+  (+ (* *cell-h* (entity-cy entity))
+     (if (>= (entity-lerp-den entity) 1)
+       (round (* (entity-lerp-num entity) (entity-lerp-pdy entity))
+              (entity-lerp-den entity))
+       0)))
+
+(defmethod tick ((entity entity))
+  (with-slots (cx cy dir
+               walk-dx walk-dy
+               lerp-pdx lerp-pdy
+               lerp-num lerp-den
+               cooldown-ticks)
+              *player-entity*
+
+    ;; Update lerp
+    (when (> lerp-num 0)
+      (decf lerp-num))
+
+    ;; Calculate entity sprite
+    (cond
+      ((< walk-dy 0) (setf dir :north))
+      ((> walk-dy 0) (setf dir :south))
+      ((< walk-dx 0) (setf dir :west))
+      ((> walk-dx 0) (setf dir :east)))
+
+    ;; Tick movement cooldown
+    (when (> cooldown-ticks 0)
+      (decf cooldown-ticks))
+
+    ;; Can we move again?
+    (when (<= cooldown-ticks 0)
+      ;; Yes - are we wanting to move?
+      (unless (and (= 0 walk-dx)
+                   (= 0 walk-dy))
+        ;; Yes - can we move there?
+        (let* ((new-x (+ cx walk-dx))
+               (new-y (+ cy walk-dy)))
+          (when (can-enter-cell new-x new-y)
+            ;; Yes - move!
+            (let* ((old-vis-px (entity-vis-px entity))
+                   (old-vis-py (entity-vis-py entity)))
+              (setf cx new-x)
+              (setf cy new-y)
+              (setf lerp-pdx (- old-vis-px (* cx *cell-w*)))
+              (setf lerp-pdy (- old-vis-py (* cy *cell-h*)))
+              (setf cooldown-ticks (entity-walk-cooldown entity))
+              (setf lerp-den (floor (* cooldown-ticks 3/2)))
+              (setf lerp-num lerp-den)
+              )))))
+
+    ;; Delete walk step
+    (setf walk-dx 0)
+    (setf walk-dy 0)
+    ))
 
 (defmethod entity-graphic ((entity entity))
   (let* ((dir-idx (ecase (entity-dir entity)
