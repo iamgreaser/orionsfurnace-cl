@@ -15,6 +15,9 @@
 (define-symbol-macro *cam-w* (* *cell-w* *cam-w-cells*))
 (define-symbol-macro *cam-h* (* *cell-h* *cam-h-cells*))
 
+(defparameter *cam-offs-x* nil)
+(defparameter *cam-offs-y* nil)
+
 (define-symbol-macro *sidebar-x* *cam-w*)
 (define-symbol-macro *sidebar-y* 0)
 (define-symbol-macro *sidebar-w* (- *base-screen-width* *sidebar-x*))

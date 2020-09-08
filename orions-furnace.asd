@@ -19,6 +19,9 @@
                (:file "macros")
                (:file "classes")
                (:file "orions-furnace")
+
+               (:file "entity")
+
                (:file "draw")
                (:file "tick")
                (:file "run")
