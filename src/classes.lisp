@@ -37,11 +37,6 @@
        :accessor entity-cy
        :initform -1
        :initarg :y)
-   ;; TODO: Make an enum system for dir --GM
-   (dir :type symbol
-        :accessor entity-dir
-        :initform :south
-        :initarg :dir)
    (cooldown-ticks :type (unsigned-byte 16)
                    :accessor entity-cooldown-ticks
                    :initform 0)

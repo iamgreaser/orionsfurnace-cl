@@ -37,9 +37,6 @@
 (defparameter *player-walk-key-yn* nil)
 (defparameter *player-walk-key-xp* nil)
 (defparameter *player-walk-key-yp* nil)
-(defparameter *player-entity*
-  (make-instance 'entity
-                 :x 3
-                 :y 2))
+(defparameter *player-entity* nil)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

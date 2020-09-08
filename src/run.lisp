@@ -22,13 +22,19 @@
 (defun run ()
   (sdl2:make-this-thread-main #'main))
 
+(defmacro with-game-state (() &body body)
+  `(let* ((*player-entity* (make-instance 'player-entity
+                                          :x 3 :y 2)))
+     ,@body))
+
 (defun core-event-loop ()
-  (sdl2:with-event-loop ()
-    (:keydown (:keysym keysym) (handle-key keysym t))
-    (:keyup   (:keysym keysym) (handle-key keysym nil))
-    (:quit () t)
-    (:idle () (handle-idle))
-    ))
+  (with-game-state ()
+    (sdl2:with-event-loop ()
+      (:keydown (:keysym keysym) (handle-key keysym t))
+      (:keyup   (:keysym keysym) (handle-key keysym nil))
+      (:quit () t)
+      (:idle () (handle-idle))
+      )))
 
 (defun handle-key (keysym pressed)
   (keysym-case keysym
