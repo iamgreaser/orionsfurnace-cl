@@ -2,6 +2,8 @@
 
 (in-package #:orions-furnace)
 
+(standard-optimisation-settings)
+
 (defun draw-frame ()
   (with-render-target (*renderer* *backbuf*)
     ;; Clear screen

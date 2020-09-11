@@ -2,6 +2,8 @@
 
 (in-package #:orions-furnace)
 
+(standard-optimisation-settings)
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; SDL2 WITH- helpers
 

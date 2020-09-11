@@ -1,5 +1,7 @@
 (in-package #:orions-furnace)
 
+(standard-optimisation-settings)
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; Serialisation
 

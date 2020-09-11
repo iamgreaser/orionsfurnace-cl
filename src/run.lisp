@@ -2,6 +2,8 @@
 
 (in-package #:orions-furnace)
 
+(standard-optimisation-settings)
+
 (defun main ()
   (sdl2:with-init (:video)
     (with-overall-rects-pool ()
@@ -51,7 +53,7 @@
     (:g (when pressed (let () #+sbcl (sb-ext:gc :full t))))
 
     ;; R: Show "room" (memory stats)
-    (:r (when pressed (room)))
+    (:r (when pressed (room t)))
 
     ;; Escape: Quit
     (:escape

@@ -2,6 +2,8 @@
 
 (in-package #:orions-furnace)
 
+(standard-optimisation-settings)
+
 (defparameter *base-screen-width* 640)
 (defparameter *base-screen-height* 360)
 (defparameter *screen-scale* 2)

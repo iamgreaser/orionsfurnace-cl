@@ -2,6 +2,8 @@
 
 (in-package #:orions-furnace)
 
+(standard-optimisation-settings)
+
 (defparameter *ticks-per-second* 60)
 (defparameter *last-tick-secs* nil)
 (defparameter *last-tick-frames* nil)

@@ -2,6 +2,8 @@
 
 (in-package #:orions-furnace)
 
+(standard-optimisation-settings)
+
 (defparameter *img-floor* ())
 
 (defparameter *asset-image-tuples*
