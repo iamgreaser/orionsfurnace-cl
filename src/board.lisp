@@ -17,6 +17,12 @@
   (:documentation "The list of entities at a given cell on a board."))
 (defgeneric (setf board-entities-at) (entities board cx cy)
   (:documentation "Setter for the list of entities at a given cell on a board."))
+(defgeneric board-tile-at (board cx cy)
+  (:documentation "The tile at a given cell on a board."))
+(defgeneric (setf board-tile-at) (tile board cx cy)
+  (:documentation "Setter for the tile at a given cell on a board."))
+(defgeneric tile-graphics (tile board cx cy)
+  (:documentation "Returns (values texture src-cx src-cy) for a given tile."))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -26,6 +32,16 @@
 (defmethod (setf board-entities-at) (entities (board board) cx cy)
   (with-slots (entities-grid) board
     (setf (aref entities-grid cx cy) entities)))
+
+(defmethod board-tile-at ((board null) cx cy) :space)
+(defmethod board-tile-at ((board board) cx cy)
+  (if (cell-on-board board cx cy)
+    (with-slots (tile-grid) board
+      (aref tile-grid cx cy))
+    :space))
+(defmethod (setf board-tile-at) (tile (board board) cx cy)
+  (with-slots (tile-grid) board
+    (setf (aref tile-grid cx cy) tile)))
 
 (defun generate-board (&key (w 64) (h 64))
   "Generates and returns a board."
@@ -39,6 +55,14 @@
                                :entities-grid entities-grid)))
     (prog1 board
       ;; TODO: Have some fun with this --GM
+
+      (setf (board-tile-at board 4 7) :wall)
+      (setf (board-tile-at board 5 7) :wall)
+      (setf (board-tile-at board 4 8) :wall)
+      (setf (board-tile-at board 5 8) :wall)
+      (setf (board-tile-at board 5 9) :wall)
+      (setf (board-tile-at board 6 10) :wall)
+      (setf (board-tile-at board 7 9) :wall)
       )))
 
 (defmethod cell-on-board ((board (eql nil)) cx cy)
@@ -94,13 +118,30 @@
                  (<= 0 cy bh))
         ;; TODO: Select the correct tile to draw --GM
         ;; TODO: Make sure we get the right wall tile once we use those --GM
-        (let* ((texture *gfx-tiles-floor001*))
+        (multiple-value-bind (texture sx sy) (tile-graphics (board-tile-at board cx cy)
+                                                            board cx cy)
           (with-pooled-rects ((d-rect px py *cell-w* *cell-h*)
-                            (s-rect 0 0 *cell-w* *cell-h*))
+                              (s-rect (* *cell-w* sx)
+                                      (* *cell-h* sy)
+                                      *cell-w* *cell-h*))
             (sdl2:render-copy *renderer* texture
                               :source-rect s-rect
                               :dest-rect d-rect)))
         ))))
+
+(defmethod tile-graphics ((tile (eql :floor)) board cx cy)
+  (values *gfx-tiles-floor001* 0 0))
+(defmethod tile-graphics ((tile (eql :wall)) board cx cy)
+  (let* ((sx 0) (sy 0))
+    (when (eql tile (board-tile-at board (1+ cx) cy)) (incf sx 1))
+    (when (eql tile (board-tile-at board (1- cx) cy)) (incf sx 2))
+    (when (eql tile (board-tile-at board cx (1+ cy))) (incf sy 1))
+    (when (eql tile (board-tile-at board cx (1- cy))) (incf sy 2))
+    (values *gfx-tiles-wall001* sx sy)))
+
+;; Fallback - TODO: Get a proper placeholder --GM
+(defmethod tile-graphics ((tile t) board cx cy)
+  (values *gfx-tiles-wall001* 3 3))
 
 (defmethod draw-tile-at-upper ((board board) cx cy px py)
   (with-slots (tile-grid
