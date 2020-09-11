@@ -167,7 +167,7 @@
 
 (defmethod draw-entity-at ((entity entity) px py)
   (multiple-value-bind (texture subx suby) (entity-graphic entity)
-    (sdl2:with-rects ((d-rect px py *cell-w* *cell-h*)
+    (with-pooled-rects ((d-rect px py *cell-w* *cell-h*)
                       (s-rect (* *cell-w* subx)
                               (* *cell-h* suby)
                               *cell-w* *cell-h*))

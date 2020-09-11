@@ -4,20 +4,21 @@
 
 (defun main ()
   (sdl2:with-init (:video)
-    (sdl2:with-window (*window* :title "Orion's Furnace (Lisp version)"
-                                :w (* *base-screen-width* *screen-scale*)
-                                :h (* *base-screen-height* *screen-scale*))
-      (sdl2:with-renderer (*renderer* *window* :flags '())
-        (with-image-lib ()
-          (with-ttf-lib ()
-            (with-game-assets ()
-              (with-texture (*backbuf* *renderer*
-                                     sdl2:+pixelformat-bgra8888+
-                                     :target
-                                     *base-screen-width*
-                                     *base-screen-height*)
-              (core-event-loop)
-              ))))))))
+    (with-overall-rects-pool ()
+      (sdl2:with-window (*window* :title "Orion's Furnace (Lisp version)"
+                                  :w (* *base-screen-width* *screen-scale*)
+                                  :h (* *base-screen-height* *screen-scale*))
+        (sdl2:with-renderer (*renderer* *window* :flags '())
+          (with-image-lib ()
+            (with-ttf-lib ()
+              (with-game-assets ()
+                (with-texture (*backbuf* *renderer*
+                                       sdl2:+pixelformat-bgra8888+
+                                       :target
+                                       *base-screen-width*
+                                       *base-screen-height*)
+                (core-event-loop)
+                )))))))))
 
 (defun run ()
   (sdl2:make-this-thread-main #'main))
@@ -48,6 +49,9 @@
 
     ;; G: Collect garbage
     (:g (when pressed (let () #+sbcl (sb-ext:gc :full t))))
+
+    ;; R: Show "room" (memory stats)
+    (:r (when pressed (room)))
 
     ;; Escape: Quit
     (:escape

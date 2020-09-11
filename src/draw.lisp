@@ -20,7 +20,7 @@
   )
 
 (defun draw-playfield ()
-  (sdl2:with-rects ((clip *cam-x* *cam-y* *cam-w* *cam-h*))
+  (with-pooled-rects ((clip *cam-x* *cam-y* *cam-w* *cam-h*))
     (sdl2:set-render-draw-color *renderer* 40 0 20 0)
     (sdl2:render-fill-rect *renderer* clip)
     (sdl2:set-render-draw-color *renderer* 255 255 255 255)
@@ -56,7 +56,7 @@
     (draw-tile-at-upper *board* cx cy px py)))
 
 (defun draw-sidebar ()
-  (sdl2:with-rects ((clip *sidebar-x* *sidebar-y* *sidebar-w* *sidebar-h*))
+  (with-pooled-rects ((clip *sidebar-x* *sidebar-y* *sidebar-w* *sidebar-h*))
     (sdl2:set-render-draw-color *renderer* 0 0 0 0)
     (sdl2:render-fill-rect *renderer* clip)
     (draw-text (+ *sidebar-x* 10)
@@ -71,7 +71,7 @@
   )
 
 ;; I added a font cache as part of trying to fix a memory leak,
-;; but it turns out the memory leak was in sdl2:with-rects.
+;; but it turns out the memory leak was in with-pooled-rects.
 ;; If it's crap, feel free to get rid of it.
 ;; But if it helps, feel free to keep it. --GM
 (defvar *font-texture-cache* nil)
@@ -90,7 +90,7 @@
         (setf *font-texture-cache*
               (subseq *font-texture-cache*
                       0 *font-texture-cache-reduce-to*))))
-    (sdl2:with-rects ((d-rect px py
+    (with-pooled-rects ((d-rect px py
                               (sdl2:texture-width texture)
                               (sdl2:texture-height texture)))
       (sdl2:render-copy *renderer* texture :dest-rect d-rect))))

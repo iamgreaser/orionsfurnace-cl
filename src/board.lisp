@@ -93,7 +93,7 @@
         ;; TODO: Select the correct tile to draw --GM
         ;; TODO: Make sure we get the right wall tile once we use those --GM
         (let* ((texture *gfx-tiles-floor001*))
-          (sdl2:with-rects ((d-rect px py *cell-w* *cell-h*)
+          (with-pooled-rects ((d-rect px py *cell-w* *cell-h*)
                             (s-rect 0 0 *cell-w* *cell-h*))
             (sdl2:render-copy *renderer* texture
                               :source-rect s-rect

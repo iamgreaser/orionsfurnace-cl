@@ -61,3 +61,46 @@
       ,@body)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; SDL2 pool-based replacement for WITH-RECTS
+(defparameter *rects-pool* (make-array 10 :fill-pointer 0 :initial-element nil))
+
+(defmacro with-overall-rects-pool (() &body body)
+  `(unwind-protect
+     (progn ,@body)
+     (progn
+       (do () ((= (fill-pointer *rects-pool*) 0))
+         (sdl2:free-rect (vector-pop *rects-pool*))))))
+
+(defmacro with-pooled-rects ((&rest rects) &body body)
+  `(let (,@(mapcar #'%parse-rect-def rects))
+     (unwind-protect
+       (progn ,@body)
+       (progn
+         ,@(mapcar #'%cleanup-rect-def rects)))))
+(defun %parse-rect-def (rect-def)
+  (etypecase rect-def
+    (symbol (%parse-rect-def `(,rect-def 0 0 0 0)))
+    (cons
+      (destructuring-bind (name x y w h) rect-def
+        `(,name (%pop-from-rects-pool ,x ,y ,w ,h))))))
+(defun %cleanup-rect-def (rect-def)
+  (etypecase rect-def
+    (symbol `(%push-into-rects-pool ,rect-def))
+    (cons
+      (destructuring-bind (name x y w h) rect-def
+        (declare (ignore x y w h))
+        (%cleanup-rect-def name)))))
+
+(defun %push-into-rects-pool (rect)
+  (vector-push-extend rect *rects-pool*))
+(defun %pop-from-rects-pool (x y w h)
+  (if (>= (fill-pointer *rects-pool*) 1)
+    (let* ((rect (vector-pop *rects-pool*)))
+      (setf (sdl2:rect-x rect) x)
+      (setf (sdl2:rect-y rect) y)
+      (setf (sdl2:rect-width rect) w)
+      (setf (sdl2:rect-height rect) h)
+      rect)
+    (sdl2:make-rect x y w h)))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
