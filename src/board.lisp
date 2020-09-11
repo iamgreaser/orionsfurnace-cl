@@ -63,6 +63,8 @@
       (setf (board-tile-at board 5 9) :wall)
       (setf (board-tile-at board 6 10) :wall)
       (setf (board-tile-at board 7 9) :wall)
+
+      (setf (board-tile-at board 6 4) :closed-door)
       )))
 
 (defmethod cell-on-board ((board (eql nil)) cx cy)
@@ -116,8 +118,6 @@
     (destructuring-bind (bw bh) (array-dimensions tile-grid)
       (when (and (<= 0 cx bw)
                  (<= 0 cy bh))
-        ;; TODO: Select the correct tile to draw --GM
-        ;; TODO: Make sure we get the right wall tile once we use those --GM
         (multiple-value-bind (texture sx sy) (tile-graphics (board-tile-at board cx cy)
                                                             board cx cy)
           (with-pooled-rects ((d-rect px py *cell-w* *cell-h*)
@@ -139,9 +139,9 @@
     (when (eql tile (board-tile-at board cx (1- cy))) (incf sy 2))
     (values *gfx-tiles-wall001* sx sy)))
 
-;; Fallback - TODO: Get a proper placeholder --GM
+;; Fallback
 (defmethod tile-graphics ((tile t) board cx cy)
-  (values *gfx-tiles-wall001* 3 3))
+  (values *gfx-unknown* 0 0))
 
 (defmethod draw-tile-at-upper ((board board) cx cy px py)
   (with-slots (tile-grid
