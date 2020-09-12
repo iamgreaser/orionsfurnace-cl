@@ -66,8 +66,8 @@
 
       (setf (board-tile-at board 6 4) :closed-door)
 
-      ;; Dummy entity
-      (let* ((entity (make-instance 'entity
+      ;; Floor tiles
+      (let* ((entity (make-instance 'floor-tile-entity
                                     :board board
                                     :x 8
                                     :y 4)))

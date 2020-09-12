@@ -9,6 +9,7 @@
 (defparameter *asset-image-tuples*
   '((*gfx-unknown* #p"dat/gfx/unknown.png")
     (*gfx-tiles-floor001* #p"dat/gfx/tiles/floor001.png")
+    (*gfx-tiles-floortile001* #p"dat/gfx/tiles/floortile001.png")
     (*gfx-tiles-wall001* #p"dat/gfx/tiles/wall001.png")
     (*gfx-player-base* #p"dat/gfx/player/base.png")
     ))

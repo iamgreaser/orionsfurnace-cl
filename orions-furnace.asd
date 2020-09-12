@@ -26,7 +26,10 @@
                (:file "entity/base")
                ;; Entity mixins
                (:file "entity/mixin/dir4")
+               ;; Entity base classes, likely to become mixins?
+               (:file "entity/item")
                ;; Entity implementations
+               (:file "entity/floor-tile")
                (:file "entity/player")
 
                (:file "draw")
