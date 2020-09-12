@@ -4,7 +4,7 @@
   :description "Describe orions-furnace here"
   ;; :author "Your Name <your.name@example.com>"
   :license "AGPLv3+"
-  :version "0.0.1"
+  :version "0.0.0"
   :serial t
   :depends-on (#:alexandria
                #:bordeaux-threads
@@ -21,7 +21,13 @@
                (:file "orions-furnace")
 
                (:file "board")
-               (:file "entity")
+
+               ;; Entities
+               (:file "entity/base")
+               ;; Entity mixins
+               (:file "entity/mixin/dir4")
+               ;; Entity implementations
+               (:file "entity/player")
 
                (:file "draw")
                (:file "tick")

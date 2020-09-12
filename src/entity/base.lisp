@@ -3,24 +3,6 @@
 (standard-optimisation-settings)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;; Entity mixins
-
-;; TODO: Make an enum system for dir --GM
-(define-serial-class dir4-entity (entity)
-  ((dir :type symbol
-        :accessor entity-dir
-        :initform :south
-        :initarg :dir))
-  (:documentation "Mixin for ENTITY: 4 directions."))
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;; Concrete entities
-
-(define-serial-class player-entity (dir4-entity entity)
-  ()
-  (:documentation "A player entity."))
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; Entity generics
 
 (defgeneric entity-vis-px (entity)
@@ -72,7 +54,7 @@
                lerp-pdx lerp-pdy
                lerp-num lerp-den
                cooldown-ticks)
-              *player-entity*
+              entity
 
     ;; If we aren't on the correct cell on the board, put us there.
     (when board
@@ -157,8 +139,8 @@
 (defmethod entity-graphic ((entity entity))
   (values (entity-texture entity) 0 0))
 
-;; TODO: Make a decent default texture and use it --GM
-(defmethod entity-texture ((entity entity)) *gfx-tiles-wall001*)
+;; Default
+(defmethod entity-texture ((entity entity)) *gfx-unknown*)
 
 (defun draw-entity (entity)
   (let* ((cx (entity-cx entity))
@@ -176,27 +158,3 @@
       (sdl2:render-copy *renderer* texture
                         :source-rect s-rect
                         :dest-rect d-rect))))
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;; Directional entity methods
-
-(defmethod entity-graphic ((entity dir4-entity))
-  (let* ((dir-idx (ecase (entity-dir entity)
-                    (:north 0)
-                    (:south 1)
-                    (:west  2)
-                    (:east  3))))
-    (values (entity-texture entity) dir-idx 0)))
-(defmethod update-entity-direction ((entity dir4-entity) dx dy)
-  ;; 4-way directional entities.
-  (with-slots (dir) entity
-    (cond
-      ((< dy 0) (setf dir :north))
-      ((> dy 0) (setf dir :south))
-      ((< dx 0) (setf dir :west))
-      ((> dx 0) (setf dir :east)))))
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;; Player entity methods
-
-(defmethod entity-texture ((entity player-entity)) *gfx-player-base*)
