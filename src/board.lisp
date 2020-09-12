@@ -67,20 +67,27 @@
       (setf (board-tile-at board 6 4) :closed-door)
 
       ;; Dummy entity
-      (vector-push-extend
-        (make-instance 'entity
-                       :board board
-                       :x 8
-                       :y 4)
-        (board-entities-array board))
+      (let* ((entity (make-instance 'entity
+                                    :board board
+                                    :x 8
+                                    :y 4)))
+        (setf (entity-walk-cooldown entity) 40)
+        (setf (entity-walk-dx entity) -1)
+        (setf (entity-walk-dy entity) -2)
+        (vector-push-extend
+          entity
+          (board-entities-array board)))
 
       ;; Dummy player
-      (vector-push-extend
-        (make-instance 'player-entity
-                       :board board
-                       :x 10
-                       :y 3)
-        (board-entities-array board))
+      (let* ((entity (make-instance 'player-entity
+                                    :board board
+                                    :x 10
+                                    :y 3)))
+        (setf (entity-walk-dx entity) -1)
+        (setf (entity-walk-dy entity) 0)
+        (vector-push-extend
+          entity
+          (board-entities-array board)))
       )))
 
 (defmethod cell-on-board ((board (eql nil)) cx cy)
