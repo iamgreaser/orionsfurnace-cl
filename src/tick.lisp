@@ -36,6 +36,6 @@
     (setf (entity-walk-dx *player-entity*) walk-dx)
     (setf (entity-walk-dy *player-entity*) walk-dy)
 
-    ;; Tick it!
-    (tick *player-entity*)
+    ;; Tick the board!
+    (tick *board*)
     ))

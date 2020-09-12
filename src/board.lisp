@@ -65,6 +65,22 @@
       (setf (board-tile-at board 7 9) :wall)
 
       (setf (board-tile-at board 6 4) :closed-door)
+
+      ;; Dummy entity
+      (vector-push-extend
+        (make-instance 'entity
+                       :board board
+                       :x 8
+                       :y 4)
+        (board-entities-array board))
+
+      ;; Dummy player
+      (vector-push-extend
+        (make-instance 'player-entity
+                       :board board
+                       :x 10
+                       :y 3)
+        (board-entities-array board))
       )))
 
 (defmethod cell-on-board ((board (eql nil)) cx cy)
@@ -102,10 +118,11 @@
 
           ;; Check against the entities list
           (dolist (other (board-entities-at board cx cy))
-            ;; If it exists, nope out
-            ;; TODO: Add some better logic to this --GM
-            (nope!)
-            )
+            ;; If it exists, check if we can enter into it
+            (when (and (is-in-player-space entity)
+                       (is-in-player-space other))
+              ;; Nope!
+              (nope!)))
 
           ;; OK, we're good!
           t)))))
@@ -154,3 +171,10 @@
         (dolist (entity (reverse (aref entities-grid cx cy)))
           (draw-entity entity))
         ))))
+
+(defmethod tick ((board board))
+  ;; Tick entities
+  (with-slots (entities-array) board
+    (dotimes (i (fill-pointer entities-array))
+      (tick (aref entities-array i))))
+  )

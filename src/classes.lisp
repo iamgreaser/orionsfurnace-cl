@@ -90,6 +90,12 @@
    (entities-grid :type (simple-array list (* *))
                   :initarg :entities-grid
                   :initform (error "Must provide :ENTITIES-GRID"))
+   (entities-array :type (array list (*))
+                   :accessor board-entities-array
+                   :initform (make-array `(0)
+                                         :element-type 'entity
+                                         :adjustable t
+                                         :fill-pointer 0))
    )
   (:documentation "A board with a lot of things in it."))
 

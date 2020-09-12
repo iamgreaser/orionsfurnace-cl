@@ -23,6 +23,8 @@
   (:documentation "Force moving an entity by a vector, with lerping."))
 (defgeneric force-move-entity-to (entity cx cy &key cooldown)
   (:documentation "Force moving an entity to a position, without lerping."))
+(defgeneric is-in-player-space (entity)
+  (:documentation "Does the given entity share player-space, and thus conflicts with standing players being in the same space?"))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; Entity default methods
@@ -141,6 +143,7 @@
 
 ;; Default
 (defmethod entity-texture ((entity entity)) *gfx-unknown*)
+(defmethod is-in-player-space ((entity entity)) nil)
 
 (defun draw-entity (entity)
   (let* ((cx (entity-cx entity))

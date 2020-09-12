@@ -30,6 +30,9 @@
           (*player-entity* (make-instance 'player-entity
                                           :board *board*
                                           :x 3 :y 2)))
+     (vector-push-extend
+       *player-entity*
+       (board-entities-array *board*))
      ,@body))
 
 (defun core-event-loop ()
